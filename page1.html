@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/index-styles.css">
+    <link href='https://fonts.googleapis.com/css?family=Montaga' rel='stylesheet' type='text/css'>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>
+      </script>
+	   <title>D3.js</title>
+  </head>
+  <body>
+    <div class="container">
+      <header class="main-header">
+        <nav class="main-navigation clearfix">
+          <ul class="main-menu">
+            <li><a href="#">Главная</a></li>
+            <li><a href="#">Курсы</a></li>
+          </ul>
+        </nav>
+      </header>
+      <main class="main clearfix">
+        <div class="main-container">
+          <div class="task">
+            <h2>Задание</h2>
+            <div class="task-field">
+              Нажмите кнопку "Запустить JS код!" для того чтобы посмотреть как работает D3.js. Попробуйте изменить различные операторы, селекторы и посмотреть что получится.
+            </div>
+          </div>
+          <div class="initial-data">
+            <h2>Исходные данные</h2>
+            <div class="initial-data-field">
+              Все данные уже добавлены в JS редактор.
+            </div>
+          </div>
+          <div class="visualizer">
+            <h2>Визуализация</h2>
+            <div class="visualizer-field-1">
+              <iframe id=iframe1  class="hide"></iframe>
+            </div>
+            <div class="visualizer-field-2">
+              <iframe id=iframe2></iframe>
+            </div>
+          </div>
+
+          <div class="js-editor">
+            <h2>Редактор Javascript кода</h2>
+            <div id="js-editor-field">
+                <script src="ace-builds/src/ace.js" type="text/javascript" charset="utf-8"></script>
+            </div>
+
+          </div>
+          <button  class="playbtn" id="playbtn">
+              Запустить JS код!
+          </button>
+        </div>
+
+        <div class="control">
+          <ul class="main-buttons">
+            <li><a class="button" href="page1.html">Назад</a></li>
+            <li><a class="button" id="btn-theory">Теория</a></li>
+            <li><a class="button hide" id="check">Проверить</a></li>
+            <li><a class="button" href="page2.html">Далее</a></li>
+          </ul>
+
+          <div class="results">
+
+          </div>
+        </div>
+        <div id="popup" class="popup">
+          <div class="popup-theory-title">
+            D3 js
+          </div>
+          <div class="popup-theory-content">
+            <p><h2>Выборка</h2>
+              Для выборки D3.js предоставляет два метода:
+              <ul>
+                <li>
+                  <code>d3.select("selector")</code>: возвращает первый элемент из всех элементов, которые соответствуют селектору
+                </li>
+                <li>
+                    <code>d3.selectAll("selector")</code>: возвращает все элементы, которые соответствуют селектору
+                </li>
+              </ul>
+              В задании используются <code>d3.selector('body')</code>, а также <code>selectAll('circle')</code>: для нахождения всех необходимых кругов.
+            </p>
+            <p>
+              <h2>Операторы</h2>
+                Операторы представляют методы, которые проводят различные операции над выборкой. Существует несколько основных операторов:
+              <ul>
+                <li>
+                  <code>attr()</code>: получает или устанавливает значение атрибута
+                </li>
+                <li>
+                  <code>style()</code>: получает или устанавливает стиль элемента
+                </li>
+                <li>
+                  <code>text()</code>: получает или устанавливает текстовое содержимое
+                </li>
+                <li>
+                  <code>html()</code>: получает или устанавливает html-код элемента
+                </li>
+              </ul>
+            </p>
+            <p>
+              <h2>Управление html-кодом элементов</h2>
+                Для создания новых элементов D3.js применяет ряд операторов, среди которых самыми распространенными являются следующие:
+              <ul>
+                <li>
+                  <code>append()</code>: добавляет новый элемент, тег которого передается в метод в качестве параметра
+                </li>
+                <li>
+                  <code>insert()</code>: добавляет новый элемент по определенной позиции
+                </li>
+                <li>
+                  <code>remove()</code>: удаляет элемент
+                </li>
+              </ul>
+            </p>
+          </div>
+          <div id="popup-theory-btn-close">Закрыть</div>
+        </div>
+      </main>
+      <footer class="main-footer">
+      </footer>
+    </div>
+    <div id="hide-layout" class="hide-layout"></div>
+    <script src="js/main-js.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/html2canvas.js" type="text/javascript"></script>
+    <script src="js/resemble.js" type="text/javascript"></script>
+    <script>
+      var containerJS = document.querySelector('#js-editor-field');
+      var JSeditor = ace.edit(containerJS);
+      JSeditor.setTheme("ace/theme/dawn");
+      JSeditor.getSession().setMode("ace/mode/javascript");
+      var sourceData = "var data = [20, 35, 55],\n    width = 440,\n    height = 200; \nd3.select('body').append('svg')\n   .attr('width', width)\n   .attr('height', height).\n   selectAll('circle').data(data).\n     enter().\n           insert('circle').\n                attr('fill', '#673AB7').\n                attr('r', (d) => {return d}).\n                attr('cx', (d) => {return d*5}).\n                attr('cy', 100);"
+      JSeditor.getSession().setValue(sourceData);
+      var iframe2 = document.querySelector('#iframe2');
+      var doc2 = iframe2.contentDocument ||
+      iframe2.contentWindow.document;
+      var playbtn = document.getElementById('playbtn');
+      playbtn.onclick = function (){
+          doc2.write("<body>"+"<\/body>"+"<script src='https://d3js.org/d3.v3.min.js'>"+"<\/script>" + "<script>" + JSeditor.getValue() + "<\/script>");
+          doc2.close();
+      };
+    </script>
+  </body>
+</html>
