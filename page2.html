@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/index-styles.css">
+    <link href='https://fonts.googleapis.com/css?family=Montaga' rel='stylesheet' type='text/css'>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>
+      </script>
+	   <title>D3.js</title>
+  </head>
+  <body>
+    <div class="container">
+      <header class="main-header">
+        <nav class="main-navigation clearfix">
+          <ul class="main-menu">
+            <li><a href="#">Главная</a></li>
+            <li><a href="#">Курсы</a></li>
+          </ul>
+        </nav>
+      </header>
+      <main class="main clearfix">
+        <div class="main-container">
+          <div class="task">
+            <h2>Задание</h2>
+            <div class="task-field">
+              Построить символ олимпиады. Используйте аттрибут <code>.attr('transform', 'translate(X,Y)')</code> для перемещения по осям X и Y, где X и Y это координаты центра круга. Сдвиг по оси X кратно <code>50px</code>, а по оси Y на <code>40px</code>. Используемые цвета: <code>steelblue</code>, <code>yellow</code>, <code>black</code>, <code>green</code>, <code>red</code>.
+            </div>
+          </div>
+          <div class="initial-data">
+            <h2>Исходные данные</h2>
+            <div class="initial-data-field">
+              Вам дан исходный код одного круга:<br>
+              <code>svg.append('circle')<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;.style('fill', 'none')<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;.style('stroke', 'steelblue')<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;.style('stroke-width', '5')<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;.attr('cx', 115)<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;.attr('cy', 80)<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;.attr('r', 50);</code>
+            </div>
+          </div>
+          <div class="visualizer">
+            <h2>Визуализация</h2>
+            <div class="visualizer-field-1">
+              <iframe id=iframe1></iframe>
+            </div>
+            <div class="visualizer-field-2">
+              <iframe id=iframe2></iframe>
+            </div>
+          </div>
+
+          <div class="js-editor">
+            <h2>Редактор Javascript кода</h2>
+            <div id="js-editor-field">
+                <script src="ace-builds/src/ace.js" type="text/javascript" charset="utf-8"></script>
+            </div>
+
+          </div>
+          <button  class="playbtn" id="playbtn">
+              Запустить JS код!
+          </button>
+        </div>
+
+        <div class="control">
+          <ul class="main-buttons">
+            <li><a class="button" href="page1.html">Назад</a></li>
+            <li><a class="button" id="btn-theory">Теория</a></li>
+            <li><a class="button" id="check" onclick="check()">Проверить</a></li>
+            <li><a class="button hide" href="page3.html" id="btn-next" disabled>Далее</a></li>
+          </ul>
+
+        </div>
+        <div class="results">
+          <div class="card match">
+              <span class="title">Совпадение</span>
+              <div id="bar-match" class=""></div>
+          </div>
+        </div>
+        <div id="popup" class="popup">
+          <div class="popup-theory-title">
+            Трансформации в D3.js
+          </div>
+          <div class="popup-theory-content">
+            <p>Трансформации являются одним из ключевых аспектов работы с D3.js. Выделяются три типа трансформаций:
+              <ul>
+                <li>
+                  Перемещение
+                </li>
+                <li>
+                  Масштабирование
+                </li>
+                <li>
+                  Вращение
+                </li>
+              </ul>
+              Все трансформации задаются для элемента с помощью атрибута <code>transform</code>. Для перемещения этот атрибут принимает значение <code>translate(x, y)</code>:</p>
+          </div>
+          <div id="popup-theory-btn-close">Закрыть</div>
+        </div>
+      </main>
+      <footer class="main-footer">
+      </footer>
+    </div>
+    <div id="hide-layout" class="hide-layout"></div>
+    <script src="js/main-js.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/html2canvas.js" type="text/javascript"></script>
+    <script src="js/resemble.js" type="text/javascript"></script>
+    <script>
+        var iframe2 = document.getElementById('iframe2');
+        var iframe2_doc = iframe2.contentDocument || iframe2.contentWindow.document;
+
+        var html_code =
+                '<html>\n' +
+                '<head>\n' +
+                '</head>\n' +
+                '<body>\n' +
+                '\t<div class="chart"></div>\n' +
+                '\t<script src="http://d3js.org/d3.v3.min.js"  charset="utf-8"><\/script>\n' +
+                '</body>\n' +
+                '</html>';
+
+        var source_data = 'var width = 400,\n'+
+                         '\theight = 200;\n'+
+            'var svg = d3.select("body").append("svg");\n'+
+               '\tsvg.attr("height", height)\n' +
+               '\t.attr("width", width);\n' +
+            '\n'+
+            'svg.append("circle")\n' +
+               '\t.style("fill", "none")\n' +
+               '\t.style("stroke", "steelblue")\n'+
+               '\t.style("stroke-width", "5")\n'+
+               '\t.attr("cx", 115)\n'+
+               '\t.attr("cy", 80)\n'+
+               '\t.attr("r", 50);\n';
+
+        var sample_js = 'svg.append("circle")\n' +
+            '\t.style("fill", "none")\n' +
+            '\t.style("stroke", "yellow")\n'+
+            '\t.style("stroke-width", "5")\n'+
+            '\t.attr("transform","translate(50, 40)")\n'+
+            '\t.attr("cx", 115)\n'+
+            '\t.attr("cy", 80)\n'+
+            '\t.attr("r", 50);\n'+
+        '\n'+
+        'svg.append("circle")\n' +
+            '\t.style("fill", "none")\n' +
+            '\t.style("stroke", "black")\n'+
+            '\t.style("stroke-width", "5")\n'+
+            '\t.attr("transform","translate(100, 0)")\n'+
+            '\t.attr("cx", 115)\n'+
+            '\t.attr("cy", 80)\n'+
+            '\t.attr("r", 50);\n'+
+        '\n'+
+        'svg.append("circle")\n' +
+            '\t.style("fill", "none")\n' +
+            '\t.style("stroke", "green")\n'+
+            '\t.style("stroke-width", "5")\n'+
+            '\t.attr("transform","translate(150, 40)")\n'+
+            '\t.attr("cx", 115)\n'+
+            '\t.attr("cy", 80)\n'+
+            '\t.attr("r", 50);\n'+
+        '\n'+
+        'svg.append("circle")\n' +
+            '\t.style("fill", "none")\n' +
+            '\t.style("stroke", "red")\n'+
+            '\t.style("stroke-width", "5")\n'+
+            '\t.attr("transform","translate(200, 0)")\n'+
+            '\t.attr("cx", 115)\n'+
+            '\t.attr("cy", 80)\n'+
+            '\t.attr("r", 50);\n'
+        var iframe1 = document.getElementById('iframe1');
+        var iframe1_doc = iframe1.contentDocument || iframe1.contentWindow.document;
+        iframe1_doc.open();
+        iframe1_doc.write(html_code + "<script>" + source_data + sample_js + "<\/script>");
+        iframe1_doc.close();
+
+        var editor_js = ace.edit("js-editor-field");
+        editor_js.setTheme("ace/theme/textmate");
+        editor_js.getSession().setMode("ace/mode/javascript");
+        document.getElementById('js-editor-field');
+        editor_js.getSession().setValue(
+              'var width = 400,\n'+
+                 '\theight = 200;\n'+
+              'var svg = d3.select("body").append("svg");\n'+
+                 '\tsvg.attr("height", height)\n' +
+                 '\t.attr("width", width);\n' +
+              '\n'+
+              'svg.append("circle")\n' +
+                 '\t.style("fill", "none")\n' +
+                 '\t.style("stroke", "steelblue")\n'+
+                 '\t.style("stroke-width", "5")\n'+
+                 '\t.attr("cx", 115)\n'+
+                 '\t.attr("cy", 80)\n'+
+                 '\t.attr("r", 50);'
+        );
+        var playbtn = document.getElementById('playbtn');
+        playbtn.onclick = function (){
+          iframe2_doc.open();
+          iframe2_doc.write(html_code + "<script>" + editor_js.getValue() + "<\/script>");
+          iframe2_doc.close();
+        };
+
+        var sample_canvas;
+        var result_canvas;
+        var bar_match;
+
+        document.querySelector('#bar-match'), function () {
+            bar_match = this;
+        };
+
+        function check() {
+
+            var load_count;
+            var sample_image, result_image;
+            html2canvas(iframe1_doc.body, {
+                onrendered: function (s_canvas) {
+                    sample_canvas = s_canvas;
+                    html2canvas(iframe2_doc.body, {
+                        onrendered: function (r_canvas) {
+                            result_canvas = r_canvas;
+                            var sample_string = sample_canvas.toDataURL("image/jpeg", 1.0);
+                            var result_string = result_canvas.toDataURL("image/jpeg", 1.0);
+                            resemble(sample_string).compareTo(result_string).onComplete(function (data) {
+                                console.log(data);
+                                var text_data;
+                                var masmatch_percentage = data.rawMisMatchPercentage;
+                                if (masmatch_percentage <= 2) {
+                                    $("#btn-next").prop("disabled", false);
+                                    $("#btn-next").removeClass("hide");
+                                }
+                                $(".card.match .title").text("Совпадение: \n" + Math.round(100 - masmatch_percentage) + "%");
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+  </body>
+</html>

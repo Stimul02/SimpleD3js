@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/index-styles.css">
+    <link href='https://fonts.googleapis.com/css?family=Montaga' rel='stylesheet' type='text/css'>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>
+      </script>
+	   <title>D3.js</title>
+  </head>
+  <body>
+    <div class="container">
+      <header class="main-header">
+        <nav class="main-navigation clearfix">
+          <ul class="main-menu">
+            <li><a href="#">Главная</a></li>
+            <li><a href="#">Курсы</a></li>
+          </ul>
+        </nav>
+      </header>
+      <main class="main clearfix">
+        <div class="main-container">
+          <div class="task">
+            <h2>Задание</h2>
+            <div class="task-field">
+              Необходимо нарисовать щит Капитана Америки. Для этого необходимо использовать 4 круга разных размеров с центров в точке <code>(225,100)</code> и 1 многоугольник, для которого заданые координаты: 225,75 230,93 249,93 235,102 240,120225,107 210,120 215,102 200,93 220,93.            </div>
+          </div>
+          <div class="initial-data">
+            <h2>Исходные данные</h2>
+            <div class="initial-data-field">
+              Радиусы кругов изменяются от <code>100px</code> до <code>25px</code> с шагом в <code>25px</code>.
+
+                Используемые цвета: красный: <code>#ef3b3c</code>, серый: <code>#f2f3ed</code>, синий: <code>#00598e</code> и белый: <code>white</code>. Цвет контура кругов: <code>black</code>
+
+            </div>
+          </div>
+          <div class="visualizer">
+            <h2>Визуализация</h2>
+            <div class="visualizer-field-1">
+              <iframe id=iframe1></iframe>
+            </div>
+            <div class="visualizer-field-2">
+              <iframe id=iframe2></iframe>
+            </div>
+          </div>
+          <div class="js-editor">
+            <h2>Редактор Javascript кода</h2>
+            <div id="js-editor-field">
+                <script src="ace-builds/src/ace.js" type="text/javascript" charset="utf-8"></script>
+            </div>
+
+          </div>
+          <button  class="playbtn" id="playbtn">
+              Запустить JS код!
+          </button>
+        </div>
+
+        <div class="control">
+          <ul class="main-buttons">
+            <li><a class="button" href="page2.html">Назад</a></li>
+            <li><a class="button" id="btn-theory">Теория</a></li>
+            <li><a class="button" id="btn-check" onclick="check()">Проверить</a></li>
+            <li><a class="button hide" href="page4.html" id="btn-next" disabled>Далее</a></li>
+          </ul>
+        </div>
+        <div class="results">
+          <div class="card match">
+              <span class="title">Совпадение</span>
+              <div id="bar-match" class=""></div>
+          </div>
+        </div>
+        <div id="popup" class="popup">
+          <div class="popup-theory-title">
+            Свойство .style()
+          </div>
+          <div class="popup-theory-content">
+            <h2>Свойство .style()</h2>
+            <p>У свойства <code>.style()</code> есть различные параметры:</p>
+            <ul>
+              <li>
+                <code>fill</code> - заливка каким-либо цветом.
+              </li>
+              <li>
+                <code>stroke</code> - цвет контура объекта.
+              </li>
+              <li>
+                <code>stroke-width</code> - ширина контура объекта.
+              </li>
+              <li>
+                <code>color</code> - задать цвет текста.
+              </li>
+            </ul>
+            <h2>Многоугольники</h2>
+            <p>Для создания более сложных фигур в виде многоугольников используется элемент <code>polygon</code>. Атрибут <code>points</code> задает массив точек, по которым строится многоугольник.</p>
+          </div>
+          <div id="popup-theory-btn-close">Закрыть</div>
+        </div>
+      </main>
+      <footer class="main-footer">
+      </footer>
+    </div>
+    <div id="hide-layout" class="hide-layout"></div>
+    <script src="js/main-js.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/html2canvas.js" type="text/javascript"></script>
+    <script src="js/resemble.js" type="text/javascript"></script>
+    <script>
+        var iframe2 = document.getElementById('iframe2');
+        var iframe2_doc = iframe2.contentDocument || iframe2.contentWindow.document;
+
+        var html_code =
+                '<html>\n' +
+                '<head>\n' +
+                '</head>\n' +
+                '<body>\n' +
+                '\t<script src="http://d3js.org/d3.v3.min.js"  charset="utf-8"><\/script>\n' +
+                '</body>\n' +
+                '</html>';
+
+        var source_data ='';
+
+
+        var sample_js =
+'var width = 400,\n'+
+	'height = 200;\n'+
+'var svg = d3.select("body").append("svg");\n'+
+	'svg.attr("height", height)\n'+
+	'.attr("width", width);\n'+
+'svg.append("circle")\n'+
+	'.style("fill", "#ef3b3c")\n'+
+	'.style("stroke", "black")\n'+
+	'.style("stroke-width", "1")\n'+
+	'.attr("cx", 225)\n'+
+	'.attr("cy", 100)\n'+
+	'.attr("r", 100);\n'+
+'svg.append("circle")\n'+
+	'.style("fill", "#f2f3ed")\n'+
+	'.style("stroke", "black")\n'+
+	'.style("stroke-width", "1")\n'+
+	'.attr("cx", 225)\n'+
+	'.attr("cy", 100)\n'+
+	'.attr("r", 75);\n'+
+'svg.append("circle")\n'+
+	'.style("fill", "#ef3b3c")\n'+
+	'.style("stroke", "black")\n'+
+	'.style("stroke-width", "1")\n'+
+	'.attr("cx", 225)\n'+
+	'.attr("cy", 100)\n'+
+	'.attr("r", 50);\n'+
+'svg.append("circle")\n'+
+	'.style("fill", "#00598e")\n'+
+	'.style("stroke", "black")\n'+
+	'.style("stroke-width", "1")\n'+
+	'.attr("cx", 225)\n'+
+	'.attr("cy", 100)\n'+
+	'.attr("r", 25);\n'+
+'svg.append("polygon")\n'+
+    '.style("fill", "white")\n'+
+    '.style("stroke", "white")\n'+
+    '.style("stroke-width", "1")\n'+
+    '.attr("points", "225,75 230,93 249,93 235,102 240,120 225,107 210,120 215,102 200,93 220,93")\n';
+        var iframe1 = document.getElementById('iframe1');
+        var iframe1_doc = iframe1.contentDocument || iframe1.contentWindow.document;
+        iframe1_doc.open();
+        iframe1_doc.write(html_code + "<script>" + source_data + sample_js + "<\/script>");
+        iframe1_doc.close();
+
+        var editor_js = ace.edit("js-editor-field");
+        editor_js.setTheme("ace/theme/textmate");
+        editor_js.getSession().setMode("ace/mode/javascript");
+        document.getElementById('js-editor-field');
+        editor_js.getSession().setValue(
+`var width = 400,
+    height = 200;
+var svg = d3.select("body").append("svg");
+svg.attr("height", height)
+   .attr("width", width);`
+        );
+        var playbtn = document.getElementById('playbtn');
+        playbtn.onclick = function (){
+          iframe2_doc.open();
+          iframe2_doc.write(html_code + "<script>" + editor_js.getValue() + "<\/script>");
+          iframe2_doc.close();
+        };
+
+        var sample_canvas;
+        var result_canvas;
+        var bar_match;
+
+        document.querySelector('#bar-match'), function () {
+            bar_match = this;
+        };
+
+        function check() {
+
+            var load_count;
+            var sample_image, result_image;
+            html2canvas(iframe1_doc.body, {
+                onrendered: function (s_canvas) {
+                    sample_canvas = s_canvas;
+                    html2canvas(iframe2_doc.body, {
+                        onrendered: function (r_canvas) {
+                            result_canvas = r_canvas;
+                            var sample_string = sample_canvas.toDataURL("image/jpeg", 1.0);
+                            var result_string = result_canvas.toDataURL("image/jpeg", 1.0);
+                            resemble(sample_string).compareTo(result_string).onComplete(function (data) {
+                                console.log(data);
+                                var masmatch_percentage = data.rawMisMatchPercentage;
+                                if (masmatch_percentage <= 2) {
+                                    $("#btn-next").prop("disabled", false);
+                                    $("#btn-next").removeClass("hide");
+                                }
+                                $(".card.match .title").text("Совпадение: \n" + Math.round(100 - masmatch_percentage) + "%");
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+  </body>
+</html>

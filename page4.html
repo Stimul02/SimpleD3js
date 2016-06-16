@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/index-styles.css">
+    <link href='https://fonts.googleapis.com/css?family=Montaga' rel='stylesheet' type='text/css'>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>
+      </script>
+	   <title>D3.js</title>
+  </head>
+  <body>
+    <div class="container">
+      <header class="main-header">
+        <nav class="main-navigation clearfix">
+          <ul class="main-menu">
+            <li><a href="#">Главная</a></li>
+            <li><a href="#">Курсы</a></li>
+          </ul>
+        </nav>
+      </header>
+      <main class="main clearfix">
+        <div class="main-container">
+          <div class="task">
+            <h2>Задание</h2>
+            <div class="task-field">
+              Собрать кубик рубика. Используйте для фронтальной грани элемент прямоугольник <code>rect</code>, а для боковой и верхней грани многоугольник <code>polygon</code>. Для элемента <code>rect</code> высота и ширина равны <code>30px</code>, для элемента <code>polygon</code> высота равна <code>15px</code> и длина ребра <code>30px</code>.
+            </div>
+          </div>
+          <div class="initial-data">
+            <h2>Исходные данные</h2>
+            <div class="initial-data-field">
+              Вам дан исходный код 3 маленьких граней кубика рубика, необходимо дособирать кубик рубика
+            </div>
+          </div>
+          <div class="visualizer">
+            <h2>Визуализация</h2>
+            <div class="visualizer-field-1">
+              <iframe id=iframe1></iframe>
+            </div>
+            <div class="visualizer-field-2">
+              <iframe id=iframe2></iframe>
+            </div>
+          </div>
+          <div class="js-editor">
+            <h2>Редактор Javascript кода</h2>
+            <div id="js-editor-field">
+                <script src="ace-builds/src/ace.js" type="text/javascript" charset="utf-8"></script>
+            </div>
+
+          </div>
+          <button  class="playbtn" id="playbtn">
+              Запустить JS код!
+          </button>
+        </div>
+
+        <div class="control">
+          <ul class="main-buttons">
+            <li><a class="button" href="page3.html">Назад</a></li>
+            <li><a class="button" id="btn-theory">Теория</a></li>
+            <li><a class="button" id="btn-check" onclick="check()">Проверить</a></li>
+            <li><a class="button hide" href="page4.html">Далее</a></li>
+          </ul>
+        </div>
+        <div class="results">
+          <div class="card match">
+              <span class="title">Совпадение</span>
+              <div id="bar-match" class=""></div>
+          </div>
+        </div>
+        <div id="popup" class="popup">
+          <div class="popup-theory-title">
+            Прямоугольники и многоугольники.
+          </div>
+          <div class="popup-theory-content">
+            <h2>Прямоугольники</h2>
+            <p>Для создания прямоугольника применятся элемент <code>rect</code>. При добавлении прямоугольника надо указать атрибуты х и y, указывающие на координаты левого верхнего угла, а также атрибуты <code>width</code> (ширина) и <code>height</code> (высота). И также опционально можно указать радиус для углов прямоугольника с помощью атрибута <code>rx</code>. Также для прямоугольников задаются различные стили через <code>.style()</code></p>
+            <h2>Многоугольники</h2>
+            <p>Для создания более сложных фигур в виде многоугольников используется элемент <code>polygon</code>. Атрибут <code>points</code> задает массив точек, по которым строится многоугольник.</p>
+          </div>
+          <div id="popup-theory-btn-close">Закрыть</div>
+        </div>
+      </main>
+      <footer class="main-footer">
+      </footer>
+    </div>
+    <div id="hide-layout" class="hide-layout"></div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+    <script src="js/main-js.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/html2canvas.js" type="text/javascript"></script>
+    <script src="js/resemble.js" type="text/javascript"></script>
+    <script>
+        var iframe2 = document.getElementById('iframe2');
+        var iframe2_doc = iframe2.contentDocument || iframe2.contentWindow.document;
+
+        var html_code =
+                '<html>\n' +
+                '<head>\n' +
+                '</head>\n' +
+                '<body>\n' +
+                '\t<div class="chart"></div>\n' +
+                '\t<script src="http://d3js.org/d3.v3.min.js"  charset="utf-8"><\/script>\n' +
+                '</body>\n' +
+                '</html>';
+
+        var source_data = 'var width = 400,\n'+
+                         '\theight = 200;\n'+
+            'var svg = d3.select("body").append("svg");\n'+
+               '\tsvg.attr("height", height)\n' +
+               '\t.attr("width", width);\n';
+
+
+        var sample_js = '// Первая строка кубика верхней грани\n'+
+        'svg.append("polygon")\n'+
+            '.style("fill", "yellow")\n'+
+            '.style("stroke", "black")\n'+
+            '.style("stroke-width", "1")\n'+
+            '.attr("points", "80,64 110,64 125,46 95,46");\n'+
+        'svg.append("polygon")\n'+
+            '.style("fill", "yellow")\n'+
+            '.style("stroke", "black")\n'+
+            '.style("stroke-width", "1")\n'+
+            '.attr("points", "50,64 80,64 95,46 65,46");\n'+
+        'svg.append("polygon")\n'+
+            '.style("fill", "yellow")\n'+
+            '.style("stroke", "black")\n'+
+            '.style("stroke-width", "1")\n'+
+            '.attr("points", "110,64 140,64 155,46 125,46");\n'+
+        '// Вторая строка кубика верхней грани\n'+
+        'svg.append("polygon")\n'+
+            '.style("fill", "yellow")\n'+
+            '.style("stroke", "black")\n'+
+            '.style("stroke-width", "1")\n'+
+            '.attr("points", "65,46 95,46 110,31 80,31");\n'+
+        'svg.append("polygon")\n'+
+            '.style("fill", "yellow")\n'+
+            '.style("stroke", "black")\n'+
+            '.style("stroke-width", "1")\n'+
+            '.attr("points", "95,46 125,46 140,31 110,31");\n'+
+        'svg.append("polygon")\n'+
+            '.style("fill", "yellow")\n'+
+            '.style("stroke", "black")\n'+
+            '.style("stroke-width", "1")\n'+
+            '.attr("points", "125,46 155,46 170,31 140,31");\n'+
+        '// Третья строка кубика верхней грани\n'+
+        'svg.append("polygon")\n'+
+            '.style("fill", "yellow")\n'+
+            '.style("stroke", "black")\n'+
+            '.style("stroke-width", "1")\n'+
+            '.attr("points", "80,31 110,31 125,16 95,16");\n'+
+        'svg.append("polygon")\n'+
+            '.style("fill", "yellow")\n'+
+            '.style("stroke", "black")\n'+
+            '.style("stroke-width", "1")\n'+
+            '.attr("points", "110,31 140,31 155,16 125,16");\n'+
+        'svg.append("polygon")\n'+
+            '.style("fill", "yellow")\n'+
+            '.style("stroke", "black")\n'+
+            '.style("stroke-width", "1")\n'+
+            '.attr("points", "140,31 170,31 185,16 155,16");\n'+
+        '// Первая строка кубика фронтальной грани\n'+
+        'svg.append("rect")\n'+
+            '.style("fill", "red")\n'+
+            '.style("stroke", "black")\n'+
+            '.style("stroke-width", "1")\n'+
+            '.attr("x", 50)\n'+
+            '.attr("y", 64)\n'+
+            '.attr("width", 30)\n'+
+            '.attr("height", 30);\n'+
+        'svg.append("rect")\n'+
+            '.style("fill", "red")\n'+
+            '.style("stroke", "black")\n'+
+            '.style("stroke-width", "1")\n'+
+            '.attr("x", 80)\n'+
+            '.attr("y", 64)\n'+
+            '.attr("width", 30)\n'+
+            '.attr("height", 30);\n'+
+        'svg.append("rect")\n'+
+            '.style("fill", "red")\n'+
+            '.style("stroke", "black")\n'+
+            '.style("stroke-width", "1")\n'+
+            '.attr("x", 110)\n'+
+            '.attr("y", 64)\n'+
+            '.attr("width", 30)\n'+
+            '.attr("height", 30);\n'+
+        '// Вторая строка кубиков фрорнтальной грани\n'+
+        'svg.append("rect")\n'+
+            '.style("fill", "red")\n'+
+            '.style("stroke", "black")\n'+
+            '.style("stroke-width", "1")\n'+
+            '.attr("x", 50)\n'+
+            '.attr("y", 94)\n'+
+            '.attr("width", 30)\n'+
+            '.attr("height", 30);\n'+
+        'svg.append("rect")\n'+
+            '.style("fill", "red")\n'+
+            '.style("stroke", "black")\n'+
+            '.style("stroke-width", "1")\n'+
+            '.attr("x", 80)\n'+
+            '.attr("y", 94)\n'+
+            '.attr("width", 30)\n'+
+            '.attr("height", 30);\n'+
+        'svg.append("rect")\n'+
+            '.style("fill", "red")\n'+
+            '.style("stroke", "black")\n'+
+            '.style("stroke-width", "1")\n'+
+            '.attr("x", 110)\n'+
+            '.attr("y", 94)\n'+
+            '.attr("width", 30)\n'+
+            '.attr("height", 30);\n'+
+        '// Третья строка кубика фронтальной грани\n'+
+        'svg.append("rect")\n'+
+            '.style("fill", "red")\n'+
+            '.style("stroke", "black")\n'+
+            '.style("stroke-width", "1")\n'+
+            '.attr("x", 50)\n'+
+            '.attr("y", 124)\n'+
+            '.attr("width", 30)\n'+
+            '.attr("height", 30);\n'+
+        'svg.append("rect")\n'+
+            '.style("fill", "red")\n'+
+            '.style("stroke", "black")\n'+
+            '.style("stroke-width", "1")\n'+
+            '.attr("x", 80)\n'+
+            '.attr("y", 124)\n'+
+            '.attr("width", 30)\n'+
+            '.attr("height", 30);\n'+
+        'svg.append("rect")\n'+
+            '.style("fill", "red")\n'+
+            '.style("stroke", "black")\n'+
+            '.style("stroke-width", "1")\n'+
+            '.attr("x", 110)\n'+
+            '.attr("y", 124)\n'+
+            '.attr("width", 30)\n'+
+            '.attr("height", 30);\n'+
+        '// Первый столбик боковой грани\n'+
+        'svg.append("polygon")\n'+
+            '.style("stroke", "black")\n'+
+            '.style("fill", "green")\n'+
+            '.style("stroke-width", "1")\n'+
+            '.attr("points", "140,64 155,46 155,76 140,94");\n'+
+        'svg.append("polygon")\n'+
+            '.style("fill", "green")\n'+
+            '.style("stroke", "black")\n'+
+            '.style("stroke-width", "1")\n'+
+            '.attr("points", "140,94 155,76 155,106 140,124");\n'+
+        'svg.append("polygon")\n'+
+            '.style("fill", "green")\n'+
+            '.style("stroke", "black")\n'+
+            '.style("stroke-width", "1")\n'+
+            '.attr("points", "140,124 155,106 155,136 140,154");\n'+
+        '// Второй стобик боковой грани\n'+
+        'svg.append("polygon")\n'+
+            '.style("fill", "green")\n'+
+            '.style("stroke", "black")\n'+
+            '.style("stroke-width", "1")\n'+
+            '.attr("points", "155,46 155,76 170,61 170,31");\n'+
+        'svg.append("polygon")\n'+
+            '.style("fill", "green")\n'+
+            '.style("stroke", "black")\n'+
+            '.style("stroke-width", "1")\n'+
+            '.attr("points", "155,76 155,106 170,91 170,61");\n'+
+        'svg.append("polygon")\n'+
+            '.style("fill", "green")\n'+
+            '.style("stroke", "black")\n'+
+            '.style("stroke-width", "1")\n'+
+            '.attr("points", "155,106 155,136 170,121 170,91");\n'+
+        '// Третий столбик боковой грани\n'+
+        'svg.append("polygon")\n'+
+            '.style("fill", "green")\n'+
+            '.style("stroke", "black")\n'+
+            '.style("stroke-width", "1")\n'+
+            '.attr("points", "170,61 170,31 185,16 185,46");\n'+
+        'svg.append("polygon")\n'+
+            '.style("fill", "green")\n'+
+            '.style("stroke", "black")\n'+
+            '.style("stroke-width", "1")\n'+
+            '.attr("points", "170,91 170,61 185,46 185,76");\n'+
+        'svg.append("polygon")\n'+
+            '.style("fill", "green")\n'+
+            '.style("stroke", "black")\n'+
+            '.style("stroke-width", "1")\n'+
+            '.attr("points", "170,121 170,91 185,76 185,106");'
+        var iframe1 = document.getElementById('iframe1');
+        var iframe1_doc = iframe1.contentDocument || iframe1.contentWindow.document;
+        iframe1_doc.open();
+        iframe1_doc.write(html_code + "<script>" + source_data + sample_js + "<\/script>");
+        iframe1_doc.close();
+
+        var editor_js = ace.edit("js-editor-field");
+        editor_js.setTheme("ace/theme/textmate");
+        editor_js.getSession().setMode("ace/mode/javascript");
+        document.getElementById('js-editor-field');
+        editor_js.getSession().setValue(
+`var width = 400,
+    height = 200;
+var svg = d3.select("body").append("svg");
+svg.attr("height", height)
+   .attr("width", width);
+svg.append("polygon")
+   .style("fill", "yellow")
+   .style("stroke", "black")
+   .style("stroke-width", "1")
+   .attr("points", "110,64 140,64 155,46 125,46");
+svg.append("rect")
+   .style("fill", "red")
+   .style("stroke", "black")
+   .style("stroke-width", "1")
+   .attr("x", 110)
+   .attr("y", 64)
+   .attr("width", 30)
+   .attr("height", 30);
+svg.append("polygon")
+   .style("fill", "green")
+   .style("stroke", "black")
+   .style("stroke-width", "1")
+   .attr("points", "140,64 155,46 155,76 140,94");`
+        );
+        var playbtn = document.getElementById('playbtn');
+        playbtn.onclick = function (){
+          iframe2_doc.open();
+          iframe2_doc.write(html_code + "<script>" + editor_js.getValue() + "<\/script>");
+          iframe2_doc.close();
+        };
+
+        var sample_canvas;
+        var result_canvas;
+        var bar_match;
+
+        document.querySelector('#bar-match'), function () {
+            bar_match = this;
+        };
+
+        function check() {
+
+            var load_count;
+            var sample_image, result_image;
+            html2canvas(iframe1_doc.body, {
+                onrendered: function (s_canvas) {
+                    sample_canvas = s_canvas;
+                    html2canvas(iframe2_doc.body, {
+                        onrendered: function (r_canvas) {
+                            result_canvas = r_canvas;
+                            var sample_string = sample_canvas.toDataURL("image/jpeg", 1.0);
+                            var result_string = result_canvas.toDataURL("image/jpeg", 1.0);
+                            resemble(sample_string).compareTo(result_string).onComplete(function (data) {
+                                console.log(data);
+                                var masmatch_percentage = data.rawMisMatchPercentage;
+                                if (masmatch_percentage <= 2) {
+                                    $("#btn-next").prop("disabled", false);
+                                    $("#btn-next").removeClass("hide");
+                                }
+                                $(".card.match .title").text("Совпадение: \n" + Math.round(100 - masmatch_percentage) + "%");
+                            });
+
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+  </body>
+</html>
